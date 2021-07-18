@@ -43,13 +43,13 @@ public class MyID3 implements ID3 {
 
         if (data.getAttributeList() == null) {
     	    DecisionTreeNode node = new DecisionTreeNode();
-    	    //node.setElement(this.mostFrequent(parentData));
+    	    node.setElement(this.mostFrequent(parentData));
     	    return node;
         }
 
     	else if (attributes.getValues().isEmpty()) {
             DecisionTreeNode node = new DecisionTreeNode();
-            //node.setElement(this.mostFrequentPos(parentData));
+            node.setElement(this.mostFrequent(parentData));
             return node;
         }
 
@@ -147,10 +147,24 @@ public class MyID3 implements ID3 {
     private String mostFrequent(DecisionTreeData data){
         double p = this.mostFrequentPos(data);
         double n = this.mostFrequentNeg(data);
-        String counter = new String;
 
         if (p > n) {
-            return
+            return data.getClassifications()[0];
+        }
+
+        else if (p == n) {
+            double random = Math.random();
+
+            if (random <= 0.5) {
+                return data.getClassifications()[0];
+            }
+            else {
+                return data.getClassifications()[1];
+            }
+        }
+
+        else {
+            return data.getClassifications()[1];
         }
     }
 
