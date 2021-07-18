@@ -26,7 +26,10 @@ public class MyID3 implements ID3 {
     public DecisionTreeNode id3Trigger(DecisionTreeData data) {
         //this.caculateEntropy(data);
         // TODO run the algorithm, return the root of the tree
-        System.out.println(this.caculateEntropy(data));
+        //System.out.println(this.caculateEntropy(data));
+        for(Attribute attr: data.getAttributeList()) {
+            System.out.println("This is" + this.caculateRemainder(data, attr));
+        }
        return null;
     }
 
@@ -38,7 +41,6 @@ public class MyID3 implements ID3 {
     	Attribute attributes = new Attribute("attribute", 0);
 
 
-
         if (data.getAttributeList() == null) {
     	    DecisionTreeNode node = new DecisionTreeNode();
     	    //node.setElement(this.mostFrequent(parentData));
@@ -47,7 +49,7 @@ public class MyID3 implements ID3 {
 
     	else if (attributes.getValues().isEmpty()) {
             DecisionTreeNode node = new DecisionTreeNode();
-            //node.setElement(this.mostFrequent(parentData));
+            //node.setElement(this.mostFrequentPos(parentData));
             return node;
         }
 
@@ -57,7 +59,6 @@ public class MyID3 implements ID3 {
             Attribute attributeGain = new Attribute("attribute", 0);
 
         }
-
 
         return null;
 
@@ -74,7 +75,7 @@ public class MyID3 implements ID3 {
 
         else {
             e = -(ratio * this.caculateLog(ratio) + ((1 - ratio) * this.caculateLog(1 - ratio)));
-            System.out.println("This is " + e);
+            //System.out.println("This is " + e);
             return e;
 
         }
@@ -86,9 +87,22 @@ public class MyID3 implements ID3 {
         double n = 0;
         for (int i = 0; i < attr.getValues().toArray().length; i++) {
             for (int j = 0; j < data.getExamples().length; j++) {
-
+                String inAttr = data.getExamples()[j][attr.getColumn()];
+                String inValue = data.getExamples()[j][data.getExamples()[0].length - 1];
+                if (inAttr.equals(attr.getValues().toArray()[i])) {
+                    if (inValue.equals(data.getClassifications()[0])) {
+                        p++;
+                    }
+                    else if (inValue.equals(data.getClassifications()[0])) {
+                        n++;
+                    }
+                }
             }
-
+            if (p + n == 0) {
+                continue;
+            }
+            double sum = (p + n)/data.getExamples().length;
+            remainder += sum * this.caculateEntropy(data);
         }
 
         return remainder;
@@ -126,10 +140,19 @@ public class MyID3 implements ID3 {
         return r;
     }
 
-    public double caculateLog(double n) {
+    private double caculateLog(double n) {
         return (Math.log(n) / Math.log(2));
     }
 
+    private String mostFrequent(DecisionTreeData data){
+        double p = this.mostFrequentPos(data);
+        double n = this.mostFrequentNeg(data);
+        String counter = new String;
+
+        if (p > n) {
+            return
+        }
+    }
 
 
 
