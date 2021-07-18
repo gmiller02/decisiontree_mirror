@@ -47,13 +47,11 @@ public class MyID3 implements ID3 {
     	    return node;
         }
 
-    	else if (attributes.getValues().isEmpty()) {
+    	else if (data.getExamples() == null) {
             DecisionTreeNode node = new DecisionTreeNode();
             node.setElement(this.mostFrequent(parentData));
             return node;
         }
-
-    	//else if (attributes.getValues())
 
     	else {
             Attribute attributeGain = new Attribute("attribute", 0);
