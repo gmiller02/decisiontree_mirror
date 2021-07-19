@@ -4,6 +4,7 @@ import support.decisiontree.DecisionTreeData;
 import support.decisiontree.DecisionTreeNode;
 import support.decisiontree.ID3;
 import support.decisiontree.Attribute;
+import java.util.List;
 
 /**
   * This class is where your ID3 algorithm should be implemented.
@@ -39,7 +40,7 @@ public class MyID3 implements ID3 {
 
     private DecisionTreeNode myID3Algorithm(DecisionTreeData data, DecisionTreeData parentData) {
     	Attribute attributes = new Attribute("attribute", 0);
-
+        DecisionTreeNode tree = new DecisionTreeNode();
 
         if (data.getAttributeList() == null) {
     	    DecisionTreeNode node = new DecisionTreeNode();
@@ -54,12 +55,20 @@ public class MyID3 implements ID3 {
         }
 
     	else {
-            Attribute attributeGain = new Attribute("attribute", 0);
+            Attribute attributeGain = this.caculateLargeInfoGain(data);
+
+
+            tree.setElement(attributeGain.getName());
+
+            for (int a = 0; a <= attributeGain.getValues().toArray().length; a++) {
+                DecisionTreeNode node = this.myID3Algorithm(data, parentData);
+                node.setElement(node.randomValue());
+
+            }
 
         }
 
-        return null;
-
+        return tree;
     }
 
 
@@ -79,7 +88,7 @@ public class MyID3 implements ID3 {
         }
     }
 
-    public double caculateRemainder(DecisionTreeData data, Attribute attr) {
+    private double caculateRemainder(DecisionTreeData data, Attribute attr) {
         double remainder = 0;
         double p = 0;
         double n = 0;
@@ -107,7 +116,7 @@ public class MyID3 implements ID3 {
 
     }
 
-    public double mostFrequentPos(DecisionTreeData data) {
+    private double mostFrequentPos(DecisionTreeData data) {
         double p = 0;
         for (int i = 0; i < data.getExamples().length; i++) {
             if (data.getExamples()[i][data.getExamples()[0].length - 1].equals(data.getClassifications()[0])) {
@@ -117,7 +126,7 @@ public class MyID3 implements ID3 {
         return p;
     }
 
-    public double mostFrequentNeg(DecisionTreeData data) {
+    private double mostFrequentNeg(DecisionTreeData data) {
         double n = 0;
         for (int i = 0; i < data.getExamples().length; i++) {
             if (data.getExamples()[i][data.getExamples()[0].length - 1].equals(data.getClassifications()[1])) {
@@ -127,7 +136,7 @@ public class MyID3 implements ID3 {
         return n;
     }
 
-    public double caculateRatio(DecisionTreeData data) {
+    private double caculateRatio(DecisionTreeData data) {
 
         double p = this.mostFrequentPos(data);
         double n = this.mostFrequentNeg(data);
@@ -164,6 +173,29 @@ public class MyID3 implements ID3 {
         else {
             return data.getClassifications()[1];
         }
+    }
+
+    private double caculateInformationGain(DecisionTreeData data, Attribute attr) {
+        double entropy = this.caculateEntropy(data);
+        double remainder = this.caculateRemainder(data, attr);
+
+        return entropy - remainder;
+    }
+
+    private Attribute caculateLargeInfoGain(DecisionTreeData data) {
+        List<Attribute> attributeList = data.getAttributeList();
+        double largeInfoGain = 0;
+        Attribute maxAttr = attributeList.get(0);
+
+        for (Attribute attr : attributeList) {
+            double info = this.caculateInformationGain(data, maxAttr);
+
+            if (info > largeInfoGain) {
+                largeInfoGain = info;
+                maxAttr = attr;
+            }
+        }
+        return maxAttr;
     }
 
 
