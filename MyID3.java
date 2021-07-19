@@ -39,12 +39,10 @@ public class MyID3 implements ID3 {
      */
 
     private DecisionTreeNode myID3Algorithm(DecisionTreeData data, DecisionTreeData parentData) {
-    	Attribute attributes = new Attribute("attribute", 0);
-        DecisionTreeNode tree = new DecisionTreeNode();
 
         if (data.getAttributeList() == null) {
     	    DecisionTreeNode node = new DecisionTreeNode();
-    	    node.setElement(this.mostFrequent(parentData));
+    	    node.setElement(this.mostFrequent(data));
     	    return node;
         }
 
@@ -53,22 +51,26 @@ public class MyID3 implements ID3 {
             node.setElement(this.mostFrequent(parentData));
             return node;
         }
+    	else if(this.mostFrequentPos(data) == data.getExamples().length ||
+        this.mostFrequentNeg(data) == data.getExamples().length){
+    	    DecisionTreeNode node = new DecisionTreeNode();
+    	    node.setElement(this.mostFrequent(data));
+    	    return node;
+        }
 
     	else {
             Attribute attributeGain = this.caculateLargeInfoGain(data);
-
-
+            DecisionTreeNode tree = new DecisionTreeNode();
             tree.setElement(attributeGain.getName());
-
-            for (int a = 0; a <= attributeGain.getValues().toArray().length; a++) {
+            for (int a = 0; a < attributeGain.getValues().toArray().length; a++) {
+                //removal part what i'm stuck at
                 DecisionTreeNode node = this.myID3Algorithm(data, parentData);
-                node.setElement(node.randomValue());
+                tree.addChild(attributeGain.getName(),node);
 
             }
+            return tree;
 
         }
-
-        return tree;
     }
 
 
