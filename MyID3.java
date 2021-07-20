@@ -64,12 +64,13 @@ public class MyID3 implements ID3 {
             tree.setElement(attributeGain.getName());
             ArrayList<Attribute> attributesList = data.getAttributeList();
             attributesList.remove(attributeGain);
-            for (int a = 0; a < attributeGain.getValues().toArray().length; a++) {
-                DecisionTreeData newTree = new DecisionTreeData(data.getExamples(), attributesList, data.getClassifications());
-                DecisionTreeNode node = this.myID3Algorithm(newTree, data);
-                node.setElement(attributeGain.getName());
-                tree.addChild(attributeGain.getName(),node);
 
+            for (String val : attributeGain.getValues()) {
+                String[][] newSet = this.newSet(data, attributeGain, data.getExamples(), val);
+                DecisionTreeData newData = new DecisionTreeData(newSet, attributesList, data.getClassifications());
+                DecisionTreeNode node = this.myID3Algorithm(newData, data);
+
+                tree.addChild(val, node);
             }
             return tree;
         }
@@ -181,9 +182,17 @@ public class MyID3 implements ID3 {
         return entropy - remainder;
     }
 
-    private double calculateSubset(DecisionTreeData data, Attribute attr, String subset, String value) {
-        Arraylist<> subset = new ArrayList<>();
+    private String[][] newSet(DecisionTreeData data, Attribute attr, String[][] example, String val) {
+        String[][] newSet = new String[this.calculateRows(data, attr, val)][example[0].length];
+        int index = 0;
 
+        for (int i = 0; i < example.length; i++) {
+            if (example[i][attr.getColumn()].equals(val)) {
+                newSet[index] = example[i];
+                index++;
+            }
+        }
+        return newSet;
     }
 
 
@@ -202,6 +211,20 @@ public class MyID3 implements ID3 {
         }
         return maxAttr;
     }
+
+    private int calculateRows(DecisionTreeData data, Attribute attr, String val) {
+        int rows = 0;
+
+        for (int i = 0; i < data.getExamples().length; i++) {
+            String attrVal = data.getExamples()[i][attr.getColumn()];
+
+            if (attrVal.equals(val)) {
+                rows++;
+            }
+        }
+        return rows;
+    }
+
 
 
 
