@@ -4,6 +4,8 @@ import support.decisiontree.DecisionTreeData;
 import support.decisiontree.DecisionTreeNode;
 import support.decisiontree.ID3;
 import support.decisiontree.Attribute;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,13 +27,11 @@ public class MyID3 implements ID3 {
      */
     @Override
     public DecisionTreeNode id3Trigger(DecisionTreeData data) {
-        //this.caculateEntropy(data);
+
         // TODO run the algorithm, return the root of the tree
-        //System.out.println(this.caculateEntropy(data));
-        for(Attribute attr: data.getAttributeList()) {
-            System.out.println("This is" + this.caculateRemainder(data, attr));
-        }
-       return null;
+
+
+       return this.myID3Algorithm(data, null);
     }
 
     /*
@@ -59,38 +59,37 @@ public class MyID3 implements ID3 {
         }
 
     	else {
-            Attribute attributeGain = this.caculateLargeInfoGain(data);
+            Attribute attributeGain = this.calculateLargeInfoGain(data);
             DecisionTreeNode tree = new DecisionTreeNode();
             tree.setElement(attributeGain.getName());
+            ArrayList<Attribute> attributesList = data.getAttributeList();
+            attributesList.remove(attributeGain);
             for (int a = 0; a < attributeGain.getValues().toArray().length; a++) {
-                //removal part what i'm stuck at
-                DecisionTreeNode node = this.myID3Algorithm(data, parentData);
+                DecisionTreeData newTree = new DecisionTreeData(data.getExamples(), attributesList, data.getClassifications());
+                DecisionTreeNode node = this.myID3Algorithm(newTree, data);
+                node.setElement(attributeGain.getName());
                 tree.addChild(attributeGain.getName(),node);
 
             }
             return tree;
-
         }
     }
 
 
-    public double caculateEntropy(DecisionTreeData data) {
+    public double calculateEntropy(double p, double n) {
         double e = 0;
-        double ratio = this.caculateRatio(data);
+        double ratio = this.calculateRatio(p, n);
 
-        if (this.caculateRatio(data) == 0) {
+        if (this.calculateRatio(p, n) == 0) {
             return e;
         }
-
         else {
-            e = -(ratio * this.caculateLog(ratio) + ((1 - ratio) * this.caculateLog(1 - ratio)));
-            //System.out.println("This is " + e);
+            e = -(ratio * this.calculateLog(ratio) + ((1 - ratio) * this.calculateLog(1 - ratio)));
             return e;
-
         }
     }
 
-    private double caculateRemainder(DecisionTreeData data, Attribute attr) {
+    private double calculateRemainder(DecisionTreeData data, Attribute attr) {
         double remainder = 0;
         double p = 0;
         double n = 0;
@@ -111,12 +110,14 @@ public class MyID3 implements ID3 {
                 continue;
             }
             double sum = (p + n)/data.getExamples().length;
-            remainder += sum * this.caculateEntropy(data);
+            remainder += sum * this.calculateEntropy(p, n);
         }
 
         return remainder;
 
     }
+
+
 
     private double mostFrequentPos(DecisionTreeData data) {
         double p = 0;
@@ -138,18 +139,14 @@ public class MyID3 implements ID3 {
         return n;
     }
 
-    private double caculateRatio(DecisionTreeData data) {
-
-        double p = this.mostFrequentPos(data);
-        double n = this.mostFrequentNeg(data);
+    private double calculateRatio(double p, double n) {
 
         double r = p/(p+n);
-        //System.out.println(r);
 
         return r;
     }
 
-    private double caculateLog(double n) {
+    private double calculateLog(double n) {
         return (Math.log(n) / Math.log(2));
     }
 
@@ -177,20 +174,26 @@ public class MyID3 implements ID3 {
         }
     }
 
-    private double caculateInformationGain(DecisionTreeData data, Attribute attr) {
-        double entropy = this.caculateEntropy(data);
-        double remainder = this.caculateRemainder(data, attr);
+    private double calculateInformationGain(DecisionTreeData data, Attribute attr) {
+        double entropy = this.calculateEntropy(this.mostFrequentPos(data), this.mostFrequentNeg(data));
+        double remainder = this.calculateRemainder(data, attr);
 
         return entropy - remainder;
     }
 
-    private Attribute caculateLargeInfoGain(DecisionTreeData data) {
+    private double calculateSubset(DecisionTreeData data, Attribute attr, String subset, String value) {
+        Arraylist<> subset = new ArrayList<>();
+
+    }
+
+
+    private Attribute calculateLargeInfoGain(DecisionTreeData data) {
         List<Attribute> attributeList = data.getAttributeList();
         double largeInfoGain = 0;
         Attribute maxAttr = attributeList.get(0);
 
         for (Attribute attr : attributeList) {
-            double info = this.caculateInformationGain(data, maxAttr);
+            double info = this.calculateInformationGain(data, maxAttr);
 
             if (info > largeInfoGain) {
                 largeInfoGain = info;
