@@ -4,8 +4,6 @@ import support.decisiontree.DecisionTreeData;
 import support.decisiontree.DecisionTreeNode;
 import support.decisiontree.ID3;
 import support.decisiontree.Attribute;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,7 +80,7 @@ public class MyID3 implements ID3 {
             return e;
     }
 
-    private double calculateRemainder(DecisionTreeData data, Attribute attr) {
+    public double calculateRemainder(DecisionTreeData data, Attribute attr) {
         double remainder = 0;
 
         for (int i = 0; i < attr.getValues().toArray().length; i++) {
@@ -114,7 +112,7 @@ public class MyID3 implements ID3 {
 
 
 
-    private double mostFrequentPos(DecisionTreeData data) {
+    public double mostFrequentPos(DecisionTreeData data) {
         double p = 0;
         for (int i = 0; i < data.getExamples().length; i++) {
             if (data.getExamples()[i][data.getExamples()[0].length - 1].equals(data.getClassifications()[0])) {
@@ -124,7 +122,7 @@ public class MyID3 implements ID3 {
         return p;
     }
 
-    private double mostFrequentNeg(DecisionTreeData data) {
+    public double mostFrequentNeg(DecisionTreeData data) {
         double n = 0;
         for (int i = 0; i < data.getExamples().length; i++) {
             if (data.getExamples()[i][data.getExamples()[0].length - 1].equals(data.getClassifications()[1])) {
@@ -134,21 +132,21 @@ public class MyID3 implements ID3 {
         return n;
     }
 
-    private double calculateRatio(double p, double n) {
+    public double calculateRatio(double p, double n) {
 
         double r = p/(p+n);
 
         return r;
     }
 
-    private double calculateLog(double n) {
+    public double calculateLog(double n) {
         if (n == 0 || n == 0.0){
            return 0;
         }
         return (Math.log(n) / Math.log(2));
     }
 
-    private String mostFrequent(DecisionTreeData data){
+    public String mostFrequent(DecisionTreeData data){
         double p = this.mostFrequentPos(data);
         double n = this.mostFrequentNeg(data);
 
@@ -172,14 +170,14 @@ public class MyID3 implements ID3 {
         }
     }
 
-    private double calculateInformationGain(DecisionTreeData data, Attribute attr) {
+    public double calculateInformationGain(DecisionTreeData data, Attribute attr) {
         double entropy = this.calculateEntropy(this.mostFrequentPos(data), this.mostFrequentNeg(data));
         double remainder = this.calculateRemainder(data, attr);
 
         return entropy - remainder;
     }
 
-    private String[][] newSet(DecisionTreeData data, Attribute attr, String val) {
+    public String[][] newSet(DecisionTreeData data, Attribute attr, String val) {
         String[][] newSet = new String[this.calculateRows(data, attr, val)][data.getExamples()[0].length];
         int index = 0;
 
@@ -193,7 +191,7 @@ public class MyID3 implements ID3 {
     }
 
 
-    private Attribute calculateLargeInfoGain(DecisionTreeData data) {
+    public Attribute calculateLargeInfoGain(DecisionTreeData data) {
         List<Attribute> attributeList = data.getAttributeList();
         double largeInfoGain = 0;
         Attribute maxAttr = attributeList.get(0);
@@ -209,7 +207,7 @@ public class MyID3 implements ID3 {
         return maxAttr;
     }
 
-    private int calculateRows(DecisionTreeData data, Attribute attr, String val) {
+    public int calculateRows(DecisionTreeData data, Attribute attr, String val) {
         int rows = 0;
 
         for (int i = 0; i < data.getExamples().length; i++) {

@@ -27,4 +27,72 @@ public class MyID3Test {
 	/**
 	 * TODO: add your tests below!
 	 */
+
+	@Test
+	public void entropyTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void remainderTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void frequentPosTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void frequentNegTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void ratioTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void logTest() {
+		MyID3 id3 = new MyID3();
+
+
+	}
+
+	@Test
+	public void frequentTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void infoGainTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void newSetTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void largeInfoGainTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
+	@Test
+	public void rowTest() {
+		MyID3 id3 = new MyID3();
+
+	}
+
 }
