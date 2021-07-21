@@ -42,17 +42,16 @@ public class MyID3 implements ID3 {
 
         if (data.getAttributeList() == null) {
     	    DecisionTreeNode node = new DecisionTreeNode();
-    	    node.setElement(this.mostFrequent(data));
+    	    node.setElement(this.mostFrequent(parentData));
     	    return node;
         }
 
     	else if (data.getExamples() == null) {
             DecisionTreeNode node = new DecisionTreeNode();
-            node.setElement(this.mostFrequent(parentData));
+            node.setElement(this.mostFrequent(data));
             return node;
         }
-    	else if(this.mostFrequentPos(data) == data.getExamples().length ||
-        this.mostFrequentNeg(data) == data.getExamples().length){
+    	else if(this.mostFrequentPos(data) == data.getExamples().length || this.mostFrequentNeg(data) == data.getExamples().length){
     	    DecisionTreeNode node = new DecisionTreeNode();
     	    node.setElement(this.mostFrequent(data));
     	    return node;
@@ -62,12 +61,11 @@ public class MyID3 implements ID3 {
             Attribute attributeGain = this.calculateLargeInfoGain(data);
             DecisionTreeNode tree = new DecisionTreeNode();
             tree.setElement(attributeGain.getName());
-            ArrayList<Attribute> attributesList = data.getAttributeList();
-            attributesList.remove(attributeGain);
+            data.getAttributeList().remove(attributeGain);
 
             for (String val : attributeGain.getValues()) {
-                String[][] newSet = this.newSet(data, attributeGain, data.getExamples(), val);
-                DecisionTreeData newData = new DecisionTreeData(newSet, attributesList, data.getClassifications());
+                String[][] newSet = this.newSet(data, attributeGain, val);
+                DecisionTreeData newData = new DecisionTreeData(newSet, data.getAttributeList(), data.getClassifications());
                 DecisionTreeNode node = this.myID3Algorithm(newData, data);
 
                 tree.addChild(val, node);
@@ -80,29 +78,25 @@ public class MyID3 implements ID3 {
     public double calculateEntropy(double p, double n) {
         double e = 0;
         double ratio = this.calculateRatio(p, n);
-
-        if (this.calculateRatio(p, n) == 0) {
-            return e;
-        }
-        else {
             e = -(ratio * this.calculateLog(ratio) + ((1 - ratio) * this.calculateLog(1 - ratio)));
             return e;
-        }
     }
 
     private double calculateRemainder(DecisionTreeData data, Attribute attr) {
         double remainder = 0;
-        double p = 0;
-        double n = 0;
+
         for (int i = 0; i < attr.getValues().toArray().length; i++) {
+            double p = 0;
+            double n = 0;
+
             for (int j = 0; j < data.getExamples().length; j++) {
-                String inAttr = data.getExamples()[j][attr.getColumn()];
+                String inAttr = data.getExamples()[j][attr.getColumn()]; //change into immediate comparison
                 String inValue = data.getExamples()[j][data.getExamples()[0].length - 1];
                 if (inAttr.equals(attr.getValues().toArray()[i])) {
                     if (inValue.equals(data.getClassifications()[0])) {
                         p++;
                     }
-                    else if (inValue.equals(data.getClassifications()[0])) {
+                    else if (inValue.equals(data.getClassifications()[1])) {
                         n++;
                     }
                 }
@@ -148,6 +142,9 @@ public class MyID3 implements ID3 {
     }
 
     private double calculateLog(double n) {
+        if (n == 0 || n == 0.0){
+           return 0;
+        }
         return (Math.log(n) / Math.log(2));
     }
 
@@ -182,13 +179,13 @@ public class MyID3 implements ID3 {
         return entropy - remainder;
     }
 
-    private String[][] newSet(DecisionTreeData data, Attribute attr, String[][] example, String val) {
-        String[][] newSet = new String[this.calculateRows(data, attr, val)][example[0].length];
+    private String[][] newSet(DecisionTreeData data, Attribute attr, String val) {
+        String[][] newSet = new String[this.calculateRows(data, attr, val)][data.getExamples()[0].length];
         int index = 0;
 
-        for (int i = 0; i < example.length; i++) {
-            if (example[i][attr.getColumn()].equals(val)) {
-                newSet[index] = example[i];
+        for (String[] strings : data.getExamples()) {
+            if (strings[attr.getColumn()].equals(val)) {
+                newSet[index] = strings;
                 index++;
             }
         }
@@ -202,7 +199,7 @@ public class MyID3 implements ID3 {
         Attribute maxAttr = attributeList.get(0);
 
         for (Attribute attr : attributeList) {
-            double info = this.calculateInformationGain(data, maxAttr);
+            double info = this.calculateInformationGain(data, attr);
 
             if (info > largeInfoGain) {
                 largeInfoGain = info;
@@ -224,8 +221,4 @@ public class MyID3 implements ID3 {
         }
         return rows;
     }
-
-
-
-
 }
