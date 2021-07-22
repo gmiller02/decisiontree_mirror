@@ -88,13 +88,12 @@ public class MyID3 implements ID3 {
             double n = 0;
 
             for (int j = 0; j < data.getExamples().length; j++) {
-                String inAttr = data.getExamples()[j][attr.getColumn()]; //change into immediate comparison
-                String inValue = data.getExamples()[j][data.getExamples()[0].length - 1];
-                if (inAttr.equals(attr.getValues().toArray()[i])) {
-                    if (inValue.equals(data.getClassifications()[0])) {
+
+                if (data.getExamples()[j][attr.getColumn()].equals(attr.getValues().toArray()[i])) {
+                    if (data.getExamples()[j][data.getExamples()[0].length - 1].equals(data.getClassifications()[0])) {
                         p++;
                     }
-                    else if (inValue.equals(data.getClassifications()[1])) {
+                    else if (data.getExamples()[j][data.getExamples()[0].length - 1].equals(data.getClassifications()[1])) {
                         n++;
                     }
                 }
@@ -109,7 +108,6 @@ public class MyID3 implements ID3 {
         return remainder;
 
     }
-
 
 
     public double mostFrequentPos(DecisionTreeData data) {
