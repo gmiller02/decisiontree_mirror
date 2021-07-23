@@ -1,0 +1,26 @@
+decisiontree README
+
+Handin: This is my final handin.
+
+Design choices: In order to implement my decisiontree, I had to create many helper methods. Some of these methods are very
+standard and relied on psuedocode, such as the math methods that calculated entropy, remainder, the logarithmic function,
+and the information gain. I broke down some of those methods even further, as I made a helper method that calculated the ratio of positive
+and negative classifications when I could have just done that operation in my entropy method.
+
+I do not think there is anything unusual about the way that I implemented my helper methods, but I went into the project
+with the goal to factor out as many operations as I could. I did not want methods that calculated more than one operation
+as those are difficult to debug, so I created methods that completed these operations. These methods, which don't necessarily
+do mathmatical operations that are outlined by the document, include: mostFrequentPos, mostFrequentNeg, mostFrequent,
+calculateLargeInfoGain, and calculateRows. These methods complete the following:
+
+mostFrequentPos and mostFrequentNeg calculate which method returns the classification that occurs the most, positive or
+negative.
+
+mostFrequent counts and keeps track of all of the classifications in the decisiontree.
+
+calculateLargeInfoGain calculates the informationGain of each attribute in the attribute list, then returns the attribute with
+the largest information gain.
+
+newSet creates a new set that is that is the same size as the number of times your inputted value appears and your column
+of attributes.
+
