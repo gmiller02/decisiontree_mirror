@@ -21,8 +21,8 @@ public class MyID3Test {
 
 	    // This creates a DecisionTreeData object that you can use for testing.
 	    DecisionTreeData shortData = DataReader.readFile("src/decisiontree/decisiontree-data/short-data-training.csv");
-		Attribute attr = shortData.getAttributeList().get(1);
-		assertTrue(id3.calculateInformationGain(shortData, attr) == 0.34758988139079705);
+		Attribute attr = shortData.getAttributeList().get(4);
+		assertTrue(id3.calculateInformationGain(shortData, attr) == 0.45443400292496494);
 	}
 	
 	/**
@@ -99,7 +99,6 @@ public class MyID3Test {
 	@Test
 	public void newSetTest() {
 		MyID3 id3 = new MyID3();
-
 
 	}
 
